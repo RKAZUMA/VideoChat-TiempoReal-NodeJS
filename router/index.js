@@ -4,6 +4,7 @@ const st = require('st')
 const course = require('course')
 const path = require('path')
 const jsonBody = require('body/json')
+const helper = require('../helper')
 
 const router = course();
 
@@ -19,10 +20,13 @@ router.post('/process', function (req, res){
     if (err)
       return fail(err, res)
 
-    console.log(body)
+      let converter = helper.convertVideo(body.images)
 
-    res.setHeader('Content-Type', 'application/json')
-    res.end(JSON.stringify({ok: true}))
+    converter.on('video', function(video){
+      res.setHeader('COntent-Type', 'application/json')
+      res.end(JSON.stringify({video: video}))
+    })
+
 
   })
 })
@@ -48,4 +52,5 @@ function fail(req, res){
   res.statusCode = 500;
   res.end('Algo extraño ocurrio')
 }
+
 module.exports = onRequest;
