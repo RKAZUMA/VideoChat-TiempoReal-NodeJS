@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/ivanbtrujillo/VideoChat-TiempoReal-NodeJS",
   "dependencies": {
+    "course": "0.0.1",
     "st": "^0.5.5",
     "webrtc2images": "^1.4.4"
   },
