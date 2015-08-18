@@ -6,6 +6,7 @@ const uuid = require('uuid')
 const os = require('os')
 const fs = require('fs')
 const path = require('path')
+const listFiles = require('./list')
 
 module.exports = function(images){
 
@@ -52,7 +53,7 @@ module.exports = function(images){
 
   //Creamos el video a partir de las imagenes
   function createVideo(done){
-    done()
+  done()
   }
 
   //Codificamos el video
@@ -62,8 +63,29 @@ module.exports = function(images){
 
   //Borramos los archivos temporales de las imagenes
   function cleanup(done){
-    done()
+    events.emit('log', 'Limpiando')
+    listFiles(tmpDir, baseName, function(err, files){
+      if(err)
+        return done(err)
+
+      //Borramos los archivos
+      deleteFiles(files, done)
+    })
   }
+
+  function deleteFiles(files, done){
+    async.each(files, deleteFile, done)
+  }
+
+  function deleteFile(file, done){
+      events.emit('log', `Borrando ${file}`)
+      fs.unlink(path.join(tmpDir, file), function(err){
+
+        done()
+      })
+  }
+
+
 
   //Cuando se termina la conversion
   function convertFinished(err){
