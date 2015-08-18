@@ -1,0 +1,29 @@
+{
+  "name": "VideoChat-TiempoReal-NodeJS",
+  "version": "1.0.0",
+  "description": "VideoChat en tiempo real con video y gif animados",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ivanbtrujillo/VideoChat-TiempoReal-NodeJS.git"
+  },
+  "keywords": [
+    "videochat",
+    "nodejs",
+    "ES6",
+    "iojs",
+    "realtime"
+  ],
+  "author": "Iván Bacallado Trujillo",
+  "license": "BSD",
+  "bugs": {
+    "url": "https://github.com/ivanbtrujillo/VideoChat-TiempoReal-NodeJS/issues"
+  },
+  "homepage": "https://github.com/ivanbtrujillo/VideoChat-TiempoReal-NodeJS",
+  "dependencies": {
+    "st": "^0.5.5"
+  }
+}
