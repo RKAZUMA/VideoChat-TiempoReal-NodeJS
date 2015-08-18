@@ -1,6 +1,7 @@
 'use strict'
 
 const Webrtc2images = require('webrtc2images')
+const xhr = require('xhr')
 const record = document.querySelector('#record')
 
 //Opciones para la captura de video a imagenes
@@ -28,6 +29,18 @@ record.addEventListener('click', function(e){
       console.log(err)
     else
       console.log(frames)
+      xhr({
+        url:'/process',
+        method: 'post',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ images:frames })
+      }, function (err, res, body){
+
+          if(err)
+            return logError(err)
+
+          console.log(JSON.parse(body))
+      })
   });
 
 
