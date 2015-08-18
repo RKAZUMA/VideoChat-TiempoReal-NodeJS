@@ -1,6 +1,6 @@
 # VideoChat-TiempoReal-NodeJS
 
-Un chat en tiempo real usando videos y gif animados creado durante el curso de IO.JS en #Platzi.
+Un chat en tiempo real usando videos y gif animados creado durante el curso de IO.JS en #Platzi con @julian_duque.
 
 ## License
 

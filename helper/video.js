@@ -7,6 +7,8 @@ const os = require('os')
 const fs = require('fs')
 const path = require('path')
 const listFiles = require('./list')
+const ffmpeg = require('./ffmpeg')
+const concat = require('concat-stream')
 
 module.exports = function(images){
 
@@ -17,24 +19,27 @@ module.exports = function(images){
   let baseName = uuid.v4()
   //Directorio donde guardamos las imagenes en el directorio temp del SO
   let tmpDir = os.tmpDir()
+  //Donde almacenamos el video final
+  let video
 
   //Ejecutamos las funciones en serie
   async.series([
     decodeImages,
     createVideo,
     encodeVideo,
-    cleanup,
-    convertFinished
-  ])
+    cleanup
+  ],convertFinished)
 
 
   //Decodificamos las imagenes de base64 a buffer
   function decodeImages(done){
+          console.log('Decodificando')
     //Decodificamos cada imagen
     async.eachSeries(images, decodeImage, done)
   }
   //Convertimos la imagen a buffer
   function decodeImage(image, done){
+        console.log('Convirtiendo ${fileName}')
     //Creamos el nombre del archivo
     let fileName = `${baseName}-${count++}.jpg`
     //Creamos el buffer a partir de la imagen
@@ -46,24 +51,38 @@ module.exports = function(images){
     ws.on('error', done)
       //Si no hay error, continua
       .end(buffer, done)
-
-      events.emit(`log`, `Convertiendo ${fileName}`)
-
   }
 
   //Creamos el video a partir de las imagenes
   function createVideo(done){
-  done()
+      console.log('Creando el video')
+      ffmpeg({
+          baseName: baseName,
+          folder: tmpDir
+      }, done)
   }
 
   //Codificamos el video
   function encodeVideo(done){
-    done()
+
+    let fileName = `${baseName}.webm`
+    let rs = fs.createReadStream(path.join(tmpDir, fileName))
+
+
+    console.log(`Codificando el video ${fileName}`)
+    //Convertimos a base64 el video
+    rs.pipe(concat(function (videoBuffer) {
+      video = `data:video/webm;base64,${videoBuffer.toString('base64')}`
+      done()
+    }))
+
+    rs.on('error', done)
+
   }
 
   //Borramos los archivos temporales de las imagenes
   function cleanup(done){
-    events.emit('log', 'Limpiando')
+    console.log('Limpiando')
     listFiles(tmpDir, baseName, function(err, files){
       if(err)
         return done(err)
@@ -78,20 +97,19 @@ module.exports = function(images){
   }
 
   function deleteFile(file, done){
-      events.emit('log', `Borrando ${file}`)
+      console.log(`Borrando ${file}`)
       fs.unlink(path.join(tmpDir, file), function(err){
 
         done()
       })
   }
 
-
-
   //Cuando se termina la conversion
   function convertFinished(err){
-    setTimeout(function(){
-      events.emit('video', 'Este sera el video codificado')
-    }, 100)
+    if(err)
+      return events.emit('error', err)
+
+    events.emit('video', video)
   }
 
   return events

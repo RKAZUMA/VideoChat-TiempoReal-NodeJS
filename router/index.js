@@ -23,7 +23,7 @@ router.post('/process', function (req, res){
       let converter = helper.convertVideo(body.images)
 
     converter.on('video', function(video){
-      res.setHeader('COntent-Type', 'application/json')
+      res.setHeader('Content-Type', 'application/json')
       res.end(JSON.stringify({video: video}))
     })
 
@@ -50,7 +50,8 @@ function onRequest(req, res){
 
 function fail(req, res){
   res.statusCode = 500;
-  res.end('Algo extraño ocurrio')
+  res.setHeader('Content-Type', 'text/plain')
+  res.end(err.message)
 }
 
 module.exports = onRequest;

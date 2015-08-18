@@ -40,7 +40,15 @@ record.addEventListener('click', function(e){
           if(err)
             return logError(err)
 
-          console.log(JSON.parse(body))
+
+          body = JSON.parse(body)
+
+          if(body.video){
+            const video= document.querySelector('#video')
+            video.src= body.video
+            video.loop=true
+            video.play()
+          }
       })
   });
 
